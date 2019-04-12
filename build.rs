@@ -1,9 +1,13 @@
 extern crate pkg_config;
 
 fn main() {
-    if std::process::Command::new("pkg-config").output().is_err() {
-        println!("cargo:rustc-link-lib=geos_c");
-        return;
+    let lib = "geos_c";
+
+    match pkg_config::Config::new().probe(lib) {
+        Ok(_) => {}
+        Err(_) => {
+            println!("cargo:rustc-link-lib=dylib={}", lib);
+        }
     }
 
     // TODO: handle library versions like this!
