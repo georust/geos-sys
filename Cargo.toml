@@ -1,0 +1,24 @@
+[package]
+name = "geos-sys"
+version = "1.0.0"
+authors = ["Guillaume Gomez <guillaume1.gomez@gmail.com>"]
+
+description = "GEOS C API bindings"
+repository = "https://github.com/georust/geos-sys"
+documentation = "https://docs.rs/crate/geos-sys/"
+readme = "README.md"
+keywords = ["geos", "libgeos", "geometry", "geography", "gis"]
+categories = ["external-ffi-bindings", "algorithms"]
+license = "MIT"
+
+build = "build.rs"
+
+[dependencies]
+libc = "~0.2"
+
+[build-dependencies]
+pkg-config = "0.3"
+
+[lib]
+name = "geos_sys"
+crate-type = ["dylib", "rlib"]
