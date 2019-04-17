@@ -96,6 +96,7 @@ extern "C" {
     pub fn GEOSHasZ(g: *const GEOSGeometry) -> c_char;
     pub fn GEOSisClosed(g: *const GEOSGeometry) -> c_char;
     pub fn GEOSisValid(g: *const GEOSGeometry) -> c_char;
+    pub fn GEOSisValidReason(g: *const GEOSGeometry) -> *mut c_char;
 
     pub fn GEOSGeomToWKT(g: *const GEOSGeometry) -> *mut c_char;
     pub fn GEOSGeomFromWKT(wkt: *const c_char) -> *mut GEOSGeometry;
@@ -281,6 +282,7 @@ extern "C" {
         size: *mut size_t,
     ) -> *mut c_uchar;
     pub fn GEOSisValid_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_char;
+    pub fn GEOSisValidReason_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> *mut c_char;
     pub fn GEOSGeomTypeId_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_int;
     pub fn GEOSArea_r(
         handle: GEOSContextHandle_t,
