@@ -98,6 +98,15 @@ extern "C" {
     pub fn GEOSisValid(g: *const GEOSGeometry) -> c_char;
 
     pub fn GEOSGeomToWKT(g: *const GEOSGeometry) -> *mut c_char;
+    pub fn GEOSGeomFromWKT(wkt: *const c_char) -> *mut GEOSGeometry;
+    pub fn GEOSGeomFromHEX_buf(
+        hex: *const c_uchar,
+        size: size_t,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSGeomToHEX_buf(
+        g: *const GEOSGeometry,
+        size: *mut size_t,
+    ) -> *mut c_uchar;
     pub fn GEOSGeomFromWKB_buf(wkb: *const u8, size: size_t) -> *mut GEOSGeometry;
     pub fn GEOSGeomToWKB_buf(g: *const GEOSGeometry, size: *mut size_t) -> *mut u8;
     pub fn GEOSGeomTypeId(g: *const GEOSGeometry) -> c_int;
@@ -136,6 +145,12 @@ extern "C" {
         distance: *mut c_double,
     ) -> c_int;
     pub fn GEOSGeomGetLength(g: *const GEOSGeometry, length: *mut c_double) -> c_int;
+    pub fn GEOSGeomGetX(g: *const GEOSGeometry, x: *mut c_double) -> c_int;
+    pub fn GEOSGeomGetY(g: *const GEOSGeometry, y: *mut c_double) -> c_int;
+    pub fn GEOSGeomGetZ(g: *const GEOSGeometry, z: *mut c_double) -> c_int;
+    pub fn GEOSGeomGetPointN(g: *const GEOSGeometry, n: c_int) -> *mut GEOSGeometry;
+    pub fn GEOSGeomGetStartPoint(g: *const GEOSGeometry) -> *mut GEOSGeometry;
+    pub fn GEOSGeomGetEndPoint(g: *const GEOSGeometry) -> *mut GEOSGeometry;
     pub fn GEOSNearestPoints(
         g1: *const GEOSGeometry,
         g2: *const GEOSGeometry,
@@ -273,6 +288,7 @@ extern "C" {
         area: *mut c_double,
     ) -> c_int;
     pub fn GEOSGeomToWKT_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> *mut c_char;
+    pub fn GEOSGeomFromWKT_r(handle: GEOSContextHandle_t, wkt: *const c_char) -> *mut GEOSGeometry;
     pub fn GEOSisEmpty_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_char;
     pub fn GEOSisSimple_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_char;
     pub fn GEOSisRing_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_char;
@@ -445,6 +461,21 @@ extern "C" {
         handle: GEOSContextHandle_t,
         g: *const GEOSGeometry,
         length: *mut c_double,
+    ) -> c_int;
+    pub fn GEOSGeomGetX_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        x: *mut c_double,
+    ) -> c_int;
+    pub fn GEOSGeomGetY_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        y: *mut c_double,
+    ) -> c_int;
+    pub fn GEOSGeomGetZ_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        z: *mut c_double,
     ) -> c_int;
     pub fn GEOSSnap_r(
         handle: GEOSContextHandle_t,
@@ -630,6 +661,19 @@ extern "C" {
         idx: c_uint,
         ordinate: size_t,
     ) -> c_double;
+    pub fn GEOSGeomGetPointN_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        n: c_int,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSGeomGetStartPoint_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSGeomGetEndPoint_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+    ) -> *mut GEOSGeometry;
 
     pub fn GEOSOrientationIndex(
         ax: c_double,
