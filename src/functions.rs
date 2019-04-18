@@ -209,6 +209,14 @@ extern "C" {
         onlyEdges: c_int,
     ) -> *mut GEOSGeometry;
     pub fn GEOSNormalize(g: *mut GEOSGeometry) -> c_int;
+    pub fn GEOSBuildArea(g: *const GEOSGeometry) -> *mut GEOSGeometry;
+    pub fn GEOSLineMerge(g: *const GEOSGeometry) -> *mut GEOSGeometry;
+    pub fn GEOSReverse(g: *const GEOSGeometry) -> *mut GEOSGeometry;
+    pub fn GEOSSimplify(g: *const GEOSGeometry, tolerance: c_double) -> *mut GEOSGeometry;
+    pub fn GEOSTopologyPreserveSimplify(
+        g: *const GEOSGeometry,
+        tolerance: c_double,
+    ) -> *mut GEOSGeometry;
 
     // Functions acting on GEOSPreparedGeometry:
     pub fn GEOSPreparedContains(pg1: *const GEOSPreparedGeometry, g2: *const GEOSGeometry)
@@ -675,6 +683,19 @@ extern "C" {
     pub fn GEOSGeomGetEndPoint_r(
         handle: GEOSContextHandle_t,
         g: *const GEOSGeometry,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSBuildArea_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> *mut GEOSGeometry;
+    pub fn GEOSLineMerge_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> *mut GEOSGeometry;
+    pub fn GEOSReverse_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> *mut GEOSGeometry;
+    pub fn GEOSSimplify_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        tolerance: c_double,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSTopologyPreserveSimplify_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        tolerance: c_double,
     ) -> *mut GEOSGeometry;
 
     pub fn GEOSOrientationIndex(
