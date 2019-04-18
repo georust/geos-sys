@@ -22,3 +22,7 @@ pkg-config = "0.3"
 [lib]
 name = "geos_sys"
 crate-type = ["dylib", "rlib"]
+
+[features]
+default = []
+v3_7_0 = []
