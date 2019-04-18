@@ -252,6 +252,13 @@ extern "C" {
     pub fn GEOSPreparedTouches(pg1: *const GEOSPreparedGeometry, g2: *const GEOSGeometry) -> c_int;
     pub fn GEOSPreparedWithin(pg1: *const GEOSPreparedGeometry, g2: *const GEOSGeometry) -> c_int;
     pub fn GEOSPreparedGeom_destroy(g: *mut GEOSPreparedGeometry);
+    pub fn GEOSGetInteriorRingN(g: *const GEOSGeometry, n: c_int) -> *mut GEOSGeometry;
+    pub fn GEOSGetExteriorRing(g: *const GEOSGeometry) -> *mut GEOSGeometry;
+    pub fn GEOSGetNumInteriorRings(g: *const GEOSGeometry) -> c_int;
+    pub fn GEOSGeomGetNumPoints(g: *const GEOSGeometry) -> c_int;
+    pub fn GEOSGetNumCoordinates(g: *const GEOSGeometry) -> c_int;
+    pub fn GEOSGeom_getDimensions(g: *const GEOSGeometry) -> c_int;
+    pub fn GEOSGeom_getCoordinateDimension(g: *const GEOSGeometry) -> c_int;
 
     pub fn GEOS_init_r() -> GEOSContextHandle_t;
     pub fn GEOS_finish_r(handle: GEOSContextHandle_t);
@@ -684,8 +691,14 @@ extern "C" {
         handle: GEOSContextHandle_t,
         g: *const GEOSGeometry,
     ) -> *mut GEOSGeometry;
-    pub fn GEOSBuildArea_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> *mut GEOSGeometry;
-    pub fn GEOSLineMerge_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> *mut GEOSGeometry;
+    pub fn GEOSBuildArea_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSLineMerge_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+    ) -> *mut GEOSGeometry;
     pub fn GEOSReverse_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> *mut GEOSGeometry;
     pub fn GEOSSimplify_r(
         handle: GEOSContextHandle_t,
@@ -697,6 +710,23 @@ extern "C" {
         g: *const GEOSGeometry,
         tolerance: c_double,
     ) -> *mut GEOSGeometry;
+    pub fn GEOSGetInteriorRingN_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        n: c_int,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSGetExteriorRing_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSGetNumInteriorRings_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_int;
+    pub fn GEOSGeomGetNumPoints_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_int;
+    pub fn GEOSGetNumCoordinates_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_int;
+    pub fn GEOSGeom_getDimensions_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_int;
+    pub fn GEOSGeom_getCoordinateDimension_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+    ) -> c_int;
 
     pub fn GEOSOrientationIndex(
         ax: c_double,
