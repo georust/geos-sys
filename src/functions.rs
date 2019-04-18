@@ -213,6 +213,7 @@ extern "C" {
         onlyEdges: c_int,
     ) -> *mut GEOSGeometry;
     pub fn GEOSNormalize(g: *mut GEOSGeometry) -> c_int;
+    #[cfg(feature = "v3_8_0")]
     pub fn GEOSBuildArea(g: *const GEOSGeometry) -> *mut GEOSGeometry;
     pub fn GEOSLineMerge(g: *const GEOSGeometry) -> *mut GEOSGeometry;
     #[cfg(feature = "v3_7_0")]
@@ -222,6 +223,7 @@ extern "C" {
         g: *const GEOSGeometry,
         tolerance: c_double,
     ) -> *mut GEOSGeometry;
+    #[cfg(feature = "v3_8_0")]
     pub fn GEOSMakeValid(g: *const GEOSGeometry) -> *mut GEOSGeometry;
     pub fn GEOSGetNumGeometries(g: *const GEOSGeometry) -> c_int;
     pub fn GEOSGeomType(g: *const GEOSGeometry) -> *mut c_char;
