@@ -118,6 +118,7 @@ extern "C" {
         g2: *const GEOSGeometry,
         distance: *mut c_double,
     ) -> c_int;
+    #[cfg(feature = "v3_7_0")]
     pub fn GEOSDistanceIndexed(
         g1: *const GEOSGeometry,
         g2: *const GEOSGeometry,
@@ -134,11 +135,13 @@ extern "C" {
         density_frac: c_double,
         distance: *mut c_double,
     ) -> c_int;
+    #[cfg(feature = "v3_7_0")]
     pub fn GEOSFrechetDistance(
         g1: *const GEOSGeometry,
         g2: *const GEOSGeometry,
         distance: *mut c_double,
     ) -> c_int;
+    #[cfg(feature = "v3_7_0")]
     pub fn GEOSFrechetDistanceDensify(
         g1: *const GEOSGeometry,
         g2: *const GEOSGeometry,
@@ -148,6 +151,7 @@ extern "C" {
     pub fn GEOSGeomGetLength(g: *const GEOSGeometry, length: *mut c_double) -> c_int;
     pub fn GEOSGeomGetX(g: *const GEOSGeometry, x: *mut c_double) -> c_int;
     pub fn GEOSGeomGetY(g: *const GEOSGeometry, y: *mut c_double) -> c_int;
+    #[cfg(feature = "v3_7_0")]
     pub fn GEOSGeomGetZ(g: *const GEOSGeometry, z: *mut c_double) -> c_int;
     pub fn GEOSGeomGetPointN(g: *const GEOSGeometry, n: c_int) -> *mut GEOSGeometry;
     pub fn GEOSGeomGetStartPoint(g: *const GEOSGeometry) -> *mut GEOSGeometry;
@@ -211,12 +215,18 @@ extern "C" {
     pub fn GEOSNormalize(g: *mut GEOSGeometry) -> c_int;
     pub fn GEOSBuildArea(g: *const GEOSGeometry) -> *mut GEOSGeometry;
     pub fn GEOSLineMerge(g: *const GEOSGeometry) -> *mut GEOSGeometry;
+    #[cfg(feature = "v3_7_0")]
     pub fn GEOSReverse(g: *const GEOSGeometry) -> *mut GEOSGeometry;
     pub fn GEOSSimplify(g: *const GEOSGeometry, tolerance: c_double) -> *mut GEOSGeometry;
     pub fn GEOSTopologyPreserveSimplify(
         g: *const GEOSGeometry,
         tolerance: c_double,
     ) -> *mut GEOSGeometry;
+    pub fn GEOSMakeValid(g: *const GEOSGeometry) -> *mut GEOSGeometry;
+    pub fn GEOSGetNumGeometries(g: *const GEOSGeometry) -> c_int;
+    pub fn GEOSGeomType(g: *const GEOSGeometry) -> *mut c_char;
+    pub fn GEOSGetSRID(g: *const GEOSGeometry) -> c_int;
+    pub fn GEOSSetSRID(g: *const GEOSGeometry, srid: c_int) -> c_int;
 
     // Functions acting on GEOSPreparedGeometry:
     pub fn GEOSPreparedContains(pg1: *const GEOSPreparedGeometry, g2: *const GEOSGeometry)
@@ -442,6 +452,7 @@ extern "C" {
         g2: *const GEOSGeometry,
         distance: *mut c_double,
     ) -> c_int;
+    #[cfg(feature = "v3_7_0")]
     pub fn GEOSDistanceIndexed_r(
         handle: GEOSContextHandle_t,
         g1: *const GEOSGeometry,
@@ -461,12 +472,14 @@ extern "C" {
         density_frac: c_double,
         distance: *mut c_double,
     ) -> c_int;
+    #[cfg(feature = "v3_7_0")]
     pub fn GEOSFrechetDistance_r(
         handle: GEOSContextHandle_t,
         g1: *const GEOSGeometry,
         g2: *const GEOSGeometry,
         distance: *mut c_double,
     ) -> c_int;
+    #[cfg(feature = "v3_7_0")]
     pub fn GEOSFrechetDistanceDensify_r(
         handle: GEOSContextHandle_t,
         g1: *const GEOSGeometry,
@@ -489,6 +502,7 @@ extern "C" {
         g: *const GEOSGeometry,
         y: *mut c_double,
     ) -> c_int;
+    #[cfg(feature = "v3_7_0")]
     pub fn GEOSGeomGetZ_r(
         handle: GEOSContextHandle_t,
         g: *const GEOSGeometry,
@@ -699,6 +713,7 @@ extern "C" {
         handle: GEOSContextHandle_t,
         g: *const GEOSGeometry,
     ) -> *mut GEOSGeometry;
+    #[cfg(feature = "v3_7_0")]
     pub fn GEOSReverse_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> *mut GEOSGeometry;
     pub fn GEOSSimplify_r(
         handle: GEOSContextHandle_t,
@@ -727,6 +742,14 @@ extern "C" {
         handle: GEOSContextHandle_t,
         g: *const GEOSGeometry,
     ) -> c_int;
+    pub fn GEOSMakeValid_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSGetNumGeometries_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_int;
+    pub fn GEOSGeomType_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> *mut c_char;
+    pub fn GEOSGetSRID_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_int;
+    pub fn GEOSSetSRID_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry, srid: c_int) -> c_int;
 
     pub fn GEOSOrientationIndex(
         ax: c_double,

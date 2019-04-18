@@ -13,3 +13,4 @@ before_install:
 
 script:
   - cargo build
+  - cargo build --features v3_7_0
