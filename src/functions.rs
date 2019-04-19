@@ -271,6 +271,24 @@ extern "C" {
     pub fn GEOSGetNumCoordinates(g: *const GEOSGeometry) -> c_int;
     pub fn GEOSGeom_getDimensions(g: *const GEOSGeometry) -> c_int;
     pub fn GEOSGeom_getCoordinateDimension(g: *const GEOSGeometry) -> c_int;
+    #[cfg(feature = "v3_7_0")]
+    pub fn GEOSCoordSeq_isCCW(s: *const GEOSCoordSequence, is_ccw: *mut c_char) -> c_int;
+    #[cfg(feature = "v3_6_0")]
+    pub fn GEOSGeom_getPrecision(g: *const GEOSGeometry) -> c_double;
+    #[cfg(feature = "v3_6_0")]
+    pub fn GEOSGeom_setPrecision(
+        g: *const GEOSGeometry,
+        grid_size: c_double,
+        flags: c_int,
+    ) -> *mut GEOSGeometry;
+    #[cfg(feature = "v3_7_0")]
+    pub fn GEOSGeom_getXMax(g: *const GEOSGeometry, value: *mut c_double) -> c_int;
+    #[cfg(feature = "v3_7_0")]
+    pub fn GEOSGeom_getXMin(g: *const GEOSGeometry, value: *mut c_double) -> c_int;
+    #[cfg(feature = "v3_7_0")]
+    pub fn GEOSGeom_getYMax(g: *const GEOSGeometry, value: *mut c_double) -> c_int;
+    #[cfg(feature = "v3_7_0")]
+    pub fn GEOSGeom_getYMin(g: *const GEOSGeometry, value: *mut c_double) -> c_int;
 
     pub fn GEOS_init_r() -> GEOSContextHandle_t;
     pub fn GEOS_finish_r(handle: GEOSContextHandle_t);
@@ -752,6 +770,45 @@ extern "C" {
     pub fn GEOSGeomType_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> *mut c_char;
     pub fn GEOSGetSRID_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_int;
     pub fn GEOSSetSRID_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry, srid: c_int) -> c_int;
+    #[cfg(feature = "v3_7_0")]
+    pub fn GEOSCoordSeq_isCCW_r(
+        handle: GEOSContextHandle_t,
+        s: *const GEOSCoordSequence,
+        is_ccw: *mut c_char,
+    ) -> c_int;
+    #[cfg(feature = "v3_6_0")]
+    pub fn GEOSGeom_getPrecision_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_double;
+    #[cfg(feature = "v3_6_0")]
+    pub fn GEOSGeom_setPrecision_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        grid_size: c_double,
+        flags: c_int,
+    ) -> *mut GEOSGeometry;
+    #[cfg(feature = "v3_7_0")]
+    pub fn GEOSGeom_getXMax_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        value: *mut c_double,
+    ) -> c_int;
+    #[cfg(feature = "v3_7_0")]
+    pub fn GEOSGeom_getXMin_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        value: *mut c_double,
+    ) -> c_int;
+    #[cfg(feature = "v3_7_0")]
+    pub fn GEOSGeom_getYMax_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        value: *mut c_double,
+    ) -> c_int;
+    #[cfg(feature = "v3_7_0")]
+    pub fn GEOSGeom_getYMin_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        value: *mut c_double,
+    ) -> c_int;
 
     pub fn GEOSOrientationIndex(
         ax: c_double,
