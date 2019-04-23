@@ -229,6 +229,19 @@ extern "C" {
     pub fn GEOSGeomType(g: *const GEOSGeometry) -> *mut c_char;
     pub fn GEOSGetSRID(g: *const GEOSGeometry) -> c_int;
     pub fn GEOSSetSRID(g: *const GEOSGeometry, srid: c_int) -> c_int;
+    #[cfg(feature = "v3_7_0")]
+    pub fn GEOSSegmentIntersection(
+        ax0: c_double,
+        ay0: c_double,
+        ax1: c_double,
+        ay1: c_double,
+        bx0: c_double,
+        by0: c_double,
+        bx1: c_double,
+        by1: c_double,
+        cx: *mut c_double,
+        cy: *mut c_double,
+    ) -> c_int;
 
     // Functions acting on GEOSPreparedGeometry:
     pub fn GEOSPreparedContains(pg1: *const GEOSPreparedGeometry, g2: *const GEOSGeometry)
@@ -289,6 +302,22 @@ extern "C" {
     pub fn GEOSGeom_getYMax(g: *const GEOSGeometry, value: *mut c_double) -> c_int;
     #[cfg(feature = "v3_7_0")]
     pub fn GEOSGeom_getYMin(g: *const GEOSGeometry, value: *mut c_double) -> c_int;
+    #[cfg(feature = "v3_6_0")]
+    pub fn GEOSMinimumClearance(g: *const GEOSGeometry, d: *mut c_double) -> c_int;
+    #[cfg(feature = "v3_6_0")]
+    pub fn GEOSMinimumClearanceLine(g: *const GEOSGeometry) -> *mut GEOSGeometry;
+    #[cfg(feature = "v3_6_0")]
+    pub fn GEOSMinimumRotatedRectangle(g: *const GEOSGeometry) -> *mut GEOSGeometry;
+    #[cfg(feature = "v3_6_0")]
+    pub fn GEOSMinimumWidth(g: *const GEOSGeometry) -> *mut GEOSGeometry;
+    pub fn GEOSOrientationIndex(
+        ax: c_double,
+        ay: c_double,
+        bx: c_double,
+        by: c_double,
+        px: c_double,
+        py: c_double,
+    ) -> c_int;
 
     pub fn GEOS_init_r() -> GEOSContextHandle_t;
     pub fn GEOS_finish_r(handle: GEOSContextHandle_t);
@@ -809,13 +838,39 @@ extern "C" {
         g: *const GEOSGeometry,
         value: *mut c_double,
     ) -> c_int;
-
-    pub fn GEOSOrientationIndex(
-        ax: c_double,
-        ay: c_double,
-        bx: c_double,
-        by: c_double,
-        px: c_double,
-        py: c_double,
+    #[cfg(feature = "v3_6_0")]
+    pub fn GEOSMinimumClearance_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        d: *mut c_double,
+    ) -> c_int;
+    #[cfg(feature = "v3_6_0")]
+    pub fn GEOSMinimumClearanceLine_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+    ) -> *mut GEOSGeometry;
+    #[cfg(feature = "v3_6_0")]
+    pub fn GEOSMinimumRotatedRectangle_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+    ) -> *mut GEOSGeometry;
+    #[cfg(feature = "v3_6_0")]
+    pub fn GEOSMinimumWidth_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+    ) -> *mut GEOSGeometry;
+    #[cfg(feature = "v3_7_0")]
+    pub fn GEOSSegmentIntersection_r(
+        handle: GEOSContextHandle_t,
+        ax0: c_double,
+        ay0: c_double,
+        ax1: c_double,
+        ay1: c_double,
+        bx0: c_double,
+        by0: c_double,
+        bx1: c_double,
+        by1: c_double,
+        cx: *mut c_double,
+        cy: *mut c_double,
     ) -> c_int;
 }
