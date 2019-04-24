@@ -83,11 +83,13 @@ extern "C" {
         holes: *mut *mut GEOSGeometry,
         nholes: c_uint,
     ) -> *mut GEOSGeometry;
+    pub fn GEOSGeom_createEmptyPolygon() -> *mut GEOSGeometry;
     pub fn GEOSGeom_createCollection(
         t: c_int,
         geoms: *mut *mut GEOSGeometry,
         ngeoms: c_uint,
     ) -> *mut GEOSGeometry;
+    pub fn GEOSGeom_createEmptyCollection(type_: c_int) -> *mut GEOSGeometry;
 
     // Functions acting on GEOSGeometry:
     pub fn GEOSisEmpty(g: *const GEOSGeometry) -> c_char;
@@ -242,6 +244,11 @@ extern "C" {
         cx: *mut c_double,
         cy: *mut c_double,
     ) -> c_int;
+    pub fn GEOSDelaunayTriangulation(
+        g: *const GEOSGeometry,
+        tolerance: c_double,
+        onlyEdges: c_int,
+    ) -> *mut GEOSGeometry;
 
     // Functions acting on GEOSPreparedGeometry:
     pub fn GEOSPreparedContains(pg1: *const GEOSPreparedGeometry, g2: *const GEOSGeometry)
@@ -318,13 +325,25 @@ extern "C" {
         px: c_double,
         py: c_double,
     ) -> c_int;
+    pub fn GEOSGeom_createEmptyLineString() -> *mut GEOSGeometry;
+    pub fn GEOSGeom_createEmptyPoint() -> *mut GEOSGeometry;
+    pub fn GEOSGeom_getUserData(g: *const GEOSGeometry) -> *mut c_void;
+    pub fn GEOSGeom_setUserData(g: *const GEOSGeometry, userData: *mut c_void);
 
     pub fn GEOS_init_r() -> GEOSContextHandle_t;
     pub fn GEOS_finish_r(handle: GEOSContextHandle_t);
+    pub fn GEOSContext_setNoticeHandler_r(
+        handle: GEOSContextHandle_t,
+        nf: GEOSMessageHandler_r,
+    ) -> GEOSMessageHandler_r;
     pub fn GEOSContext_setNoticeMessageHandler_r(
         handle: GEOSContextHandle_t,
         nf: GEOSMessageHandler_r,
         userdata: *mut c_void,
+    ) -> GEOSMessageHandler_r;
+    pub fn GEOSContext_setErrorHandler_r(
+        handle: GEOSContextHandle_t,
+        nf: GEOSMessageHandler_r,
     ) -> GEOSMessageHandler_r;
     pub fn GEOSContext_setErrorMessageHandler_r(
         handle: GEOSContextHandle_t,
@@ -489,7 +508,6 @@ extern "C" {
         handle: GEOSContextHandle_t,
         g: *const GEOSGeometry,
     ) -> *mut GEOSGeometry;
-
     pub fn GEOSLength_r(
         handle: GEOSContextHandle_t,
         g: *const GEOSGeometry,
@@ -873,4 +891,26 @@ extern "C" {
         cx: *mut c_double,
         cy: *mut c_double,
     ) -> c_int;
+    pub fn GEOSDelaunayTriangulation_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        tolerance: c_double,
+        onlyEdges: c_int,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSGeom_createEmptyPolygon_r(handle: GEOSContextHandle_t) -> *mut GEOSGeometry;
+    pub fn GEOSGeom_createEmptyCollection_r(
+        handle: GEOSContextHandle_t,
+        type_: c_int,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSGeom_createEmptyLineString_r(handle: GEOSContextHandle_t) -> *mut GEOSGeometry;
+    pub fn GEOSGeom_createEmptyPoint_r(handle: GEOSContextHandle_t) -> *mut GEOSGeometry;
+    pub fn GEOSGeom_getUserData_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+    ) -> *mut c_void;
+    pub fn GEOSGeom_setUserData_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        userData: *mut c_void,
+    );
 }
