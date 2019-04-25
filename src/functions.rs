@@ -329,6 +329,48 @@ extern "C" {
     pub fn GEOSGeom_createEmptyPoint() -> *mut GEOSGeometry;
     pub fn GEOSGeom_getUserData(g: *const GEOSGeometry) -> *mut c_void;
     pub fn GEOSGeom_setUserData(g: *const GEOSGeometry, userData: *mut c_void);
+    pub fn GEOSSTRtree_create(nodeCapacity: size_t) -> *mut GEOSSTRtree;
+    pub fn GEOSSTRtree_insert(
+        tree: *mut GEOSSTRtree,
+        g: *const GEOSGeometry,
+        item: *mut c_void,
+    ) -> *mut GEOSSTRtree;
+    pub fn GEOSSTRtree_query(
+        tree: *mut GEOSSTRtree,
+        g: *const GEOSGeometry,
+        callback: GEOSQueryCallback,
+        userdata: *mut c_void,
+    );
+    pub fn GEOSSTRtree_nearest(
+        tree: *mut GEOSSTRtree,
+        g: *const GEOSGeometry,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSSTRtree_nearest_generic(
+        tree: *mut GEOSSTRtree,
+        item: *mut c_void,
+        itemEnvelope: *const GEOSGeometry,
+        distancefn: GEOSDistanceCallback,
+        userdata: *mut c_void,
+    ) -> *mut c_void;
+    pub fn GEOSSTRtree_iterate(
+        tree: *mut GEOSSTRtree,
+        callback: GEOSQueryCallback,
+        userdata: *mut c_void,
+    );
+    pub fn GEOSSTRtree_remove(
+        tree: *mut GEOSSTRtree,
+        g: *const GEOSGeometry,
+        item: *mut c_void,
+    ) -> c_char;
+    pub fn GEOSSTRtree_destroy(tree: *mut GEOSSTRtree);
+    pub fn GEOS_getWKBOutputDims() -> c_int;
+    pub fn GEOS_setWKBOutputDims(newDims: c_int) -> c_int;
+    pub fn GEOS_getWKBByteOrder() -> c_int;
+    pub fn GEOS_setWKBByteOrder(byteOrder: c_int) -> c_int;
+    pub fn GEOSGetGeometryN(g: *const GEOSGeometry, n: c_int) -> *mut GEOSGeometry;
+    pub fn GEOSInterpolate(g: *const GEOSGeometry, d: c_double) -> *mut GEOSGeometry;
+    pub fn GEOSInterpolateNormalized(g: *const GEOSGeometry, d: c_double) -> *mut GEOSGeometry;
+    pub fn GEOSProjectNormalized(g: *const GEOSGeometry, p: *const GEOSGeometry) -> c_double;
 
     pub fn GEOS_init_r() -> GEOSContextHandle_t;
     pub fn GEOS_finish_r(handle: GEOSContextHandle_t);
@@ -913,4 +955,67 @@ extern "C" {
         g: *const GEOSGeometry,
         userData: *mut c_void,
     );
+    pub fn GEOSSTRtree_create_r(
+        handle: GEOSContextHandle_t,
+        nodeCapacity: size_t,
+    ) -> *mut GEOSSTRtree;
+    pub fn GEOSSTRtree_insert_r(
+        handle: GEOSContextHandle_t,
+        tree: *mut GEOSSTRtree,
+        g: *const GEOSGeometry,
+        item: *mut c_void,
+    ) -> *mut GEOSSTRtree;
+    pub fn GEOSSTRtree_query_r(
+        handle: GEOSContextHandle_t,
+        tree: *mut GEOSSTRtree,
+        g: *const GEOSGeometry,
+        callback: GEOSQueryCallback,
+        userdata: *mut c_void,
+    );
+    pub fn GEOSSTRtree_nearest_r(
+        handle: GEOSContextHandle_t,
+        tree: *mut GEOSSTRtree,
+        g: *const GEOSGeometry,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSSTRtree_nearest_generic_r(
+        handle: GEOSContextHandle_t,
+        tree: *mut GEOSSTRtree,
+        item: *mut c_void,
+        itemEnvelope: *const GEOSGeometry,
+        distancefn: GEOSDistanceCallback,
+        userdata: *mut c_void,
+    ) -> *mut c_void;
+    pub fn GEOSSTRtree_iterate_r(
+        handle: GEOSContextHandle_t,
+        tree: *mut GEOSSTRtree,
+        callback: GEOSQueryCallback,
+        userdata: *mut c_void,
+    );
+    pub fn GEOSSTRtree_remove_r(
+        handle: GEOSContextHandle_t,
+        tree: *mut GEOSSTRtree,
+        g: *const GEOSGeometry,
+        item: *mut c_void,
+    ) -> c_char;
+    pub fn GEOSSTRtree_destroy_r(handle: GEOSContextHandle_t, tree: *mut GEOSSTRtree);
+    pub fn GEOSGetGeometryN_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        n: c_int,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSInterpolate_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        d: c_double,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSInterpolateNormalized_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        d: c_double,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSProjectNormalized_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        p: *const GEOSGeometry,
+    ) -> c_double;
 }
