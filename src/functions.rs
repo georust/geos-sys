@@ -100,8 +100,6 @@ extern "C" {
     pub fn GEOSisValid(g: *const GEOSGeometry) -> c_char;
     pub fn GEOSisValidReason(g: *const GEOSGeometry) -> *mut c_char;
 
-    pub fn GEOSGeomToWKT(g: *const GEOSGeometry) -> *mut c_char;
-    pub fn GEOSGeomFromWKT(wkt: *const c_char) -> *mut GEOSGeometry;
     pub fn GEOSGeomFromHEX_buf(
         hex: *const c_uchar,
         size: size_t,
@@ -444,8 +442,6 @@ extern "C" {
         g: *const GEOSGeometry,
         area: *mut c_double,
     ) -> c_int;
-    pub fn GEOSGeomToWKT_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> *mut c_char;
-    pub fn GEOSGeomFromWKT_r(handle: GEOSContextHandle_t, wkt: *const c_char) -> *mut GEOSGeometry;
     pub fn GEOSisEmpty_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_char;
     pub fn GEOSisSimple_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_char;
     pub fn GEOSisRing_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_char;
