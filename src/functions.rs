@@ -100,8 +100,6 @@ extern "C" {
     pub fn GEOSisValid(g: *const GEOSGeometry) -> c_char;
     pub fn GEOSisValidReason(g: *const GEOSGeometry) -> *mut c_char;
 
-    pub fn GEOSGeomToWKT(g: *const GEOSGeometry) -> *mut c_char;
-    pub fn GEOSGeomFromWKT(wkt: *const c_char) -> *mut GEOSGeometry;
     pub fn GEOSGeomFromHEX_buf(
         hex: *const c_uchar,
         size: size_t,
@@ -371,6 +369,26 @@ extern "C" {
     pub fn GEOSInterpolate(g: *const GEOSGeometry, d: c_double) -> *mut GEOSGeometry;
     pub fn GEOSInterpolateNormalized(g: *const GEOSGeometry, d: c_double) -> *mut GEOSGeometry;
     pub fn GEOSProjectNormalized(g: *const GEOSGeometry, p: *const GEOSGeometry) -> c_double;
+    pub fn GEOSNode(g: *const GEOSGeometry) -> *mut GEOSGeometry;
+    pub fn GEOSOffsetCurve(
+        g: *const GEOSGeometry,
+        width: c_double,
+        quadsegs: c_int,
+        joinStyle: c_int,
+        mitreLimit: c_double,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSPointOnSurface(g: *const GEOSGeometry) -> *mut GEOSGeometry;
+    pub fn GEOSPolygonize(geoms: *const *const GEOSGeometry, ngeoms: c_uint) -> *mut GEOSGeometry;
+    pub fn GEOSPolygonize_full(
+        input: *const GEOSGeometry,
+        cuts: *mut *mut GEOSGeometry,
+        dangles: *mut *mut GEOSGeometry,
+        invalidRings: *mut *mut GEOSGeometry,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSPolygonizer_getCutEdges(
+        geoms: *const *const GEOSGeometry,
+        ngeoms: c_uint,
+    ) -> *mut GEOSGeometry;
 
     pub fn GEOS_init_r() -> GEOSContextHandle_t;
     pub fn GEOS_finish_r(handle: GEOSContextHandle_t);
@@ -424,8 +442,6 @@ extern "C" {
         g: *const GEOSGeometry,
         area: *mut c_double,
     ) -> c_int;
-    pub fn GEOSGeomToWKT_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> *mut c_char;
-    pub fn GEOSGeomFromWKT_r(handle: GEOSContextHandle_t, wkt: *const c_char) -> *mut GEOSGeometry;
     pub fn GEOSisEmpty_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_char;
     pub fn GEOSisSimple_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_char;
     pub fn GEOSisRing_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_char;
@@ -1018,4 +1034,43 @@ extern "C" {
         g: *const GEOSGeometry,
         p: *const GEOSGeometry,
     ) -> c_double;
+    pub fn GEOSNode_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> *mut GEOSGeometry;
+    pub fn GEOSOffsetCurve_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        width: c_double,
+        quadsegs: c_int,
+        joinStyle: c_int,
+        mitreLimit: c_double,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSOrientationIndex_r(
+        handle: GEOSContextHandle_t,
+        ax: c_double,
+        ay: c_double,
+        bx: c_double,
+        by: c_double,
+        px: c_double,
+        py: c_double,
+    ) -> c_int;
+    pub fn GEOSPointOnSurface_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSPolygonize_r(
+        handle: GEOSContextHandle_t,
+        geoms: *const *const GEOSGeometry,
+        ngeoms: c_uint,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSPolygonize_full_r(
+        handle: GEOSContextHandle_t,
+        input: *const GEOSGeometry,
+        cuts: *mut *mut GEOSGeometry,
+        dangles: *mut *mut GEOSGeometry,
+        invalidRings: *mut *mut GEOSGeometry,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSPolygonizer_getCutEdges_r(
+        handle: GEOSContextHandle_t,
+        geoms: *const *const GEOSGeometry,
+        ngeoms: c_uint,
+    ) -> *mut GEOSGeometry;
 }
