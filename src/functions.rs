@@ -181,6 +181,27 @@ extern "C" {
         width: c_double,
         quadsegs: c_int,
     ) -> *mut GEOSGeometry;
+    pub fn GEOSBufferParams_create() -> *mut GEOSBufferParams;
+    pub fn GEOSBufferParams_destroy(params: *mut GEOSBufferParams);
+    pub fn GEOSBufferParams_setEndCapStyle(p: *mut GEOSBufferParams, style: c_int) -> c_int;
+    pub fn GEOSBufferParams_setJoinStyle(p: *mut GEOSBufferParams, joinStyle: c_int) -> c_int;
+    pub fn GEOSBufferParams_setMitreLimit(p: *mut GEOSBufferParams, mitreLimit: c_double) -> c_int;
+    pub fn GEOSBufferParams_setQuadrantSegments(p: *mut GEOSBufferParams, quadSegs: c_int) -> c_int;
+    pub fn GEOSBufferParams_setSingleSided(p: *mut GEOSBufferParams, singleSided: c_int) -> c_int;
+    pub fn GEOSBufferWithParams(
+        g: *const GEOSGeometry,
+        p: *mut GEOSBufferParams,
+        width: c_double,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSBufferWithStyle(
+        g: *const GEOSGeometry,
+        width: c_double,
+        quadSegs: c_int,
+        endCapStyle: c_int,
+        joinStyle: c_int,
+        mitreLimit: c_double,
+    ) -> *mut GEOSGeometry;
+
     pub fn GEOSEnvelope(g: *const GEOSGeometry) -> *mut GEOSGeometry;
     pub fn GEOSIntersection(g1: *const GEOSGeometry, g2: *const GEOSGeometry) -> *mut GEOSGeometry;
     pub fn GEOSConvexHull(g: *const GEOSGeometry) -> *mut GEOSGeometry;
@@ -389,7 +410,22 @@ extern "C" {
         geoms: *const *const GEOSGeometry,
         ngeoms: c_uint,
     ) -> *mut GEOSGeometry;
+    pub fn GEOSProject(g: *const GEOSGeometry, p: *const GEOSGeometry) -> c_double;
+    pub fn GEOSRelatePattern(
+        g1: *const GEOSGeometry,
+        g2: *const GEOSGeometry,
+        pat: *const c_char,
+    ) -> c_char;
+    pub fn GEOSRelate(g1: *const GEOSGeometry, g2: *const GEOSGeometry) -> *mut c_char;
+    pub fn GEOSRelatePatternMatch(mat: *const c_char, pat: *const c_char) -> c_char;
+    pub fn GEOSRelateBoundaryNodeRule(
+        g1: *const GEOSGeometry,
+        g2: *const GEOSGeometry,
+        bnr: c_int,
+    ) -> c_char;
+    pub fn GEOSSharedPaths(g1: *const GEOSGeometry, g2: *const GEOSGeometry) -> *mut GEOSGeometry;
 
+    /* Thread safe calls */
     pub fn GEOS_init_r() -> GEOSContextHandle_t;
     pub fn GEOS_finish_r(handle: GEOSContextHandle_t);
     pub fn GEOSContext_setNoticeHandler_r(
@@ -1072,5 +1108,84 @@ extern "C" {
         handle: GEOSContextHandle_t,
         geoms: *const *const GEOSGeometry,
         ngeoms: c_uint,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSBufferParams_create_r(
+        handle: GEOSContextHandle_t,
+    ) -> *mut GEOSBufferParams;
+    pub fn GEOSBufferParams_destroy_r(
+        handle: GEOSContextHandle_t,
+        params: *mut GEOSBufferParams,
+    );
+    pub fn GEOSBufferParams_setEndCapStyle_r(
+        handle: GEOSContextHandle_t,
+        p: *mut GEOSBufferParams,
+        style: c_int,
+    ) -> c_int;
+    pub fn GEOSBufferParams_setJoinStyle_r(
+        handle: GEOSContextHandle_t,
+        p: *mut GEOSBufferParams,
+        joinStyle: c_int,
+    ) -> c_int;
+    pub fn GEOSBufferParams_setMitreLimit_r(
+        handle: GEOSContextHandle_t,
+        p: *mut GEOSBufferParams,
+        mitreLimit: c_double,
+    ) -> c_int;
+    pub fn GEOSBufferParams_setQuadrantSegments_r(
+        handle: GEOSContextHandle_t,
+        p: *mut GEOSBufferParams,
+        quadSegs: c_int,
+    ) -> c_int;
+    pub fn GEOSBufferParams_setSingleSided_r(
+        handle: GEOSContextHandle_t,
+        p: *mut GEOSBufferParams,
+        singleSided: c_int,
+    ) -> c_int;
+    pub fn GEOSBufferWithParams_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        p: *mut GEOSBufferParams,
+        width: c_double,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSBufferWithStyle_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        width: c_double,
+        quadSegs: c_int,
+        endCapStyle: c_int,
+        joinStyle: c_int,
+        mitreLimit: c_double,
+    ) -> *mut GEOSGeometry;
+    pub fn GEOSProject_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        p: *const GEOSGeometry,
+    ) -> c_double;
+    pub fn GEOSRelatePattern_r(
+        handle: GEOSContextHandle_t,
+        g1: *const GEOSGeometry,
+        g2: *const GEOSGeometry,
+        pat: *const c_char,
+    ) -> c_char;
+    pub fn GEOSRelate_r(
+        handle: GEOSContextHandle_t,
+        g1: *const GEOSGeometry,
+        g2: *const GEOSGeometry,
+    ) -> *mut c_char;
+    pub fn GEOSRelatePatternMatch_r(
+        handle: GEOSContextHandle_t,
+        mat: *const c_char,
+        pat: *const c_char,
+    ) -> c_char;
+    pub fn GEOSRelateBoundaryNodeRule_r(
+        handle: GEOSContextHandle_t,
+        g1: *const GEOSGeometry,
+        g2: *const GEOSGeometry,
+        bnr: c_int,
+    ) -> c_char;
+    pub fn GEOSSharedPaths_r(
+        handle: GEOSContextHandle_t,
+        g1: *const GEOSGeometry,
+        g2: *const GEOSGeometry,
     ) -> *mut GEOSGeometry;
 }
