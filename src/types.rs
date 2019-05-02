@@ -28,6 +28,10 @@ pub struct GEOSContextHandle_HS {
 pub struct GEOSSTRtree {
     private: [u8; 0],
 }
+#[repr(C)]
+pub struct GEOSBufferParams {
+    private: [u8; 0],
+}
 
 #[allow(non_camel_case_types)]
 pub type GEOSContextHandle_t = *mut GEOSContextHandle_HS;
