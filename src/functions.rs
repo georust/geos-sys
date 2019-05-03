@@ -439,6 +439,54 @@ extern "C" {
         bnr: c_int,
     ) -> c_char;
     pub fn GEOSSharedPaths(g1: *const GEOSGeometry, g2: *const GEOSGeometry) -> *mut GEOSGeometry;
+    pub fn GEOSWKBReader_create() -> *mut GEOSWKBReader;
+    pub fn GEOSWKBReader_destroy(reader: *mut GEOSWKBReader);
+    pub fn GEOSWKBReader_read(
+        reader: *mut GEOSWKBReader,
+        wkb: *const c_uchar,
+        size: size_t,
+    );
+    pub fn GEOSWKBReader_readHEX(
+        reader: *mut GEOSWKBReader,
+        hex: *const c_uchar,
+        size: size_t,
+    );
+    pub fn GEOSWKBWriter_create() -> *mut GEOSWKBWriter;
+    pub fn GEOSWKBWriter_destroy(reader: *mut GEOSWKBWriter);
+    pub fn GEOSWKBWriter_write(
+        writer: *mut GEOSWKBWriter,
+        g: *const GEOSGeometry,
+        size: *mut size_t,
+    );
+    pub fn GEOSWKBWriter_writeHEX(
+        writer: *mut GEOSWKBWriter,
+        g: *const GEOSGeometry,
+        size: *mut size_t,
+    );
+    pub fn GEOSWKBWriter_getOutputDimension(writer: *mut GEOSWKBWriter) -> c_int;
+    pub fn GEOSWKBWriter_setOutputDimension(
+        writer: *mut GEOSWKBWriter,
+        newDimension: c_int,
+    );
+    pub fn GEOSWKBWriter_getByteOrder(writer: *mut GEOSWKBWriter) -> c_int;
+    pub fn GEOSWKBWriter_setByteOrder(
+        writer: *mut GEOSWKBWriter,
+        byteOrder: c_int,
+    );
+    pub fn GEOSWKBWriter_getIncludeSRID(writer: *mut GEOSWKBWriter) -> c_char;
+    pub fn GEOSWKBWriter_setIncludeSRID(
+        writer: *mut GEOSWKBWriter,
+        writeSRID: c_char,
+    );
+    pub fn GEOSisValidDetail(
+        g: *const GEOSGeometry,
+        flags: c_int,
+        reason: *mut *mut c_char,
+        location: *mut *mut GEOSGeometry,
+    ) -> c_char;
+    pub fn GEOS_interruptCancel();
+    pub fn GEOS_interruptRequest();
+    pub fn GEOS_interruptRegisterCallback(cb: GEOSInterruptCallback) -> GEOSInterruptCallback;
 
     /* Thread safe calls */
     pub fn GEOS_init_r() -> GEOSContextHandle_t;
@@ -1222,4 +1270,77 @@ extern "C" {
         writer: *mut GEOSWKTWriter,
         useOld3D: c_int,
     );
+
+    pub fn GEOSWKBReader_create_r(
+        handle: GEOSContextHandle_t,
+    ) -> *mut GEOSWKBReader;
+    pub fn GEOSWKBReader_destroy_r(
+        handle: GEOSContextHandle_t,
+        reader: *mut GEOSWKBReader,
+    );
+    pub fn GEOSWKBReader_read_r(
+        handle: GEOSContextHandle_t,
+        reader: *mut GEOSWKBReader,
+        wkb: *const c_uchar,
+        size: size_t,
+    );
+    pub fn GEOSWKBReader_readHEX_r(
+        handle: GEOSContextHandle_t,
+        reader: *mut GEOSWKBReader,
+        hex: *const c_uchar,
+        size: size_t,
+    );
+    pub fn GEOSWKBWriter_create_r(
+        handle: GEOSContextHandle_t,
+    ) -> *mut GEOSWKBWriter;
+    pub fn GEOSWKBWriter_destroy_r(
+        handle: GEOSContextHandle_t,
+        writer: *mut GEOSWKBWriter,
+    );
+    pub fn GEOSWKBWriter_write_r(
+        handle: GEOSContextHandle_t,
+        writer: *mut GEOSWKBWriter,
+        g: *const GEOSGeometry,
+        size: *mut size_t,
+    );
+    pub fn GEOSWKBWriter_writeHEX_r(
+        handle: GEOSContextHandle_t,
+        writer: *mut GEOSWKBWriter,
+        g: *const GEOSGeometry,
+        size: *mut size_t,
+    );
+    pub fn GEOSWKBWriter_getOutputDimension_r(
+        handle: GEOSContextHandle_t,
+        writer: *mut GEOSWKBWriter,
+    ) -> c_int;
+    pub fn GEOSWKBWriter_setOutputDimension_r(
+        handle: GEOSContextHandle_t,
+        writer: *mut GEOSWKBWriter,
+        newDimension: c_int,
+    );
+    pub fn GEOSWKBWriter_getByteOrder_r(
+        handle: GEOSContextHandle_t,
+        writer: *mut GEOSWKBWriter,
+    ) -> c_int;
+    pub fn GEOSWKBWriter_setByteOrder_r(
+        handle: GEOSContextHandle_t,
+        writer: *mut GEOSWKBWriter,
+        byteOrder: c_int,
+    );
+    pub fn GEOSWKBWriter_getIncludeSRID_r(
+        handle: GEOSContextHandle_t,
+        writer: *mut GEOSWKBWriter,
+    ) -> c_char;
+    pub fn GEOSWKBWriter_setIncludeSRID_r(
+        handle: GEOSContextHandle_t,
+        writer: *mut GEOSWKBWriter,
+        writeSRID: c_char,
+    );
+    pub fn GEOSisValidDetail_r(
+        handle: GEOSContextHandle_t,
+        g: *const GEOSGeometry,
+        flags: c_int,
+        reason: *mut *mut c_char,
+        location: *mut *mut GEOSGeometry,
+    ) -> c_char;
 }
