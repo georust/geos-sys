@@ -5,7 +5,15 @@ pub struct GEOSWKTReader {
     private: [u8; 0],
 }
 #[repr(C)]
+pub struct GEOSWKBReader {
+    private: [u8; 0],
+}
+#[repr(C)]
 pub struct GEOSWKTWriter {
+    private: [u8; 0],
+}
+#[repr(C)]
+pub struct GEOSWKBWriter {
     private: [u8; 0],
 }
 #[repr(C)]
@@ -48,3 +56,6 @@ pub type GEOSDistanceCallback =
         item2: *const c_void,
         distance: *mut c_double,
         userdata: *mut c_void)>;
+#[allow(non_camel_case_types)]
+pub type GEOSInterruptCallback =
+    Option<unsafe extern "C" fn()>;
