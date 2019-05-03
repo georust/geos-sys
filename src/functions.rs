@@ -34,7 +34,7 @@ extern "C" {
     pub fn GEOSWKTWriter_setOutputDimension(
         writer: *mut GEOSWKTWriter,
         dim: c_int,
-    ) -> c_int;
+    );
     pub fn GEOSWKTWriter_setTrim(
         writer: *mut GEOSWKTWriter,
         trim: c_char,
@@ -1211,7 +1211,7 @@ extern "C" {
         handle: GEOSContextHandle_t,
         writer: *mut GEOSWKTWriter,
         dim: c_int,
-    ) -> c_int;
+    );
     pub fn GEOSWKTWriter_setTrim_r(
         handle: GEOSContextHandle_t,
         writer: *mut GEOSWKTWriter,
