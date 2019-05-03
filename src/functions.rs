@@ -457,12 +457,12 @@ extern "C" {
         writer: *mut GEOSWKBWriter,
         g: *const GEOSGeometry,
         size: *mut size_t,
-    );
+    ) -> *mut c_uchar;
     pub fn GEOSWKBWriter_writeHEX(
         writer: *mut GEOSWKBWriter,
         g: *const GEOSGeometry,
         size: *mut size_t,
-    );
+    ) -> *mut c_uchar;
     pub fn GEOSWKBWriter_getOutputDimension(writer: *mut GEOSWKBWriter) -> c_int;
     pub fn GEOSWKBWriter_setOutputDimension(
         writer: *mut GEOSWKBWriter,
@@ -1302,13 +1302,13 @@ extern "C" {
         writer: *mut GEOSWKBWriter,
         g: *const GEOSGeometry,
         size: *mut size_t,
-    );
+    ) -> *mut c_uchar;
     pub fn GEOSWKBWriter_writeHEX_r(
         handle: GEOSContextHandle_t,
         writer: *mut GEOSWKBWriter,
         g: *const GEOSGeometry,
         size: *mut size_t,
-    );
+    ) -> *mut c_uchar;
     pub fn GEOSWKBWriter_getOutputDimension_r(
         handle: GEOSContextHandle_t,
         writer: *mut GEOSWKBWriter,
