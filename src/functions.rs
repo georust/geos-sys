@@ -28,6 +28,21 @@ extern "C" {
         writer: *mut GEOSWKTWriter,
         precision: c_int,
     );
+    pub fn GEOSWKTWriter_getOutputDimension(
+        writer: *mut GEOSWKTWriter,
+    ) -> c_int;
+    pub fn GEOSWKTWriter_setOutputDimension(
+        writer: *mut GEOSWKTWriter,
+        dim: c_int,
+    ) -> c_int;
+    pub fn GEOSWKTWriter_setTrim(
+        writer: *mut GEOSWKTWriter,
+        trim: c_char,
+    );
+    pub fn GEOSWKTWriter_setOld3D(
+        writer: *mut GEOSWKTWriter,
+        useOld3D: c_int,
+    );
 
     pub fn GEOSFree(buffer: *mut c_void);
     pub fn GEOSFree_r(context: GEOSContextHandle_t, buffer: *mut c_void);
@@ -1188,4 +1203,23 @@ extern "C" {
         g1: *const GEOSGeometry,
         g2: *const GEOSGeometry,
     ) -> *mut GEOSGeometry;
+    pub fn GEOSWKTWriter_getOutputDimension_r(
+        handle: GEOSContextHandle_t,
+        writer: *mut GEOSWKTWriter,
+    ) -> c_int;
+    pub fn GEOSWKTWriter_setOutputDimension_r(
+        handle: GEOSContextHandle_t,
+        writer: *mut GEOSWKTWriter,
+        dim: c_int,
+    ) -> c_int;
+    pub fn GEOSWKTWriter_setTrim_r(
+        handle: GEOSContextHandle_t,
+        writer: *mut GEOSWKTWriter,
+        trim: c_char,
+    );
+    pub fn GEOSWKTWriter_setOld3D_r(
+        handle: GEOSContextHandle_t,
+        writer: *mut GEOSWKTWriter,
+        useOld3D: c_int,
+    );
 }
