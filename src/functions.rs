@@ -915,7 +915,8 @@ extern "C" {
         s: *const GEOSCoordSequence,
         idx: c_uint,
         ordinate: size_t,
-    ) -> c_double;
+        val: *mut c_double,
+    ) -> c_int;
     pub fn GEOSGeomGetPointN_r(
         handle: GEOSContextHandle_t,
         g: *const GEOSGeometry,
