@@ -2,9 +2,9 @@ use libc::{c_char, c_double, c_int, c_uchar, c_uint, c_void, size_t};
 use crate::types::*;
 
 extern "C" {
-    pub fn initGEOS() -> *mut c_void;
+    pub fn initGEOS(nf: GEOSMessageHandler, ef: GEOSMessageHandler);
     pub fn GEOSversion() -> *const c_char;
-    pub fn finishGEOS() -> *mut c_void;
+    pub fn finishGEOS();
 
     // API for reading WKT:
     pub fn GEOSWKTReader_create() -> *mut GEOSWKTReader;
@@ -47,7 +47,7 @@ extern "C" {
     pub fn GEOSFree(buffer: *mut c_void);
     pub fn GEOSFree_r(context: GEOSContextHandle_t, buffer: *mut c_void);
 
-    pub fn GEOSPrepare(g: *const GEOSGeometry) -> *mut GEOSPreparedGeometry;
+    pub fn GEOSPrepare(g: *const GEOSGeometry) -> *const GEOSPreparedGeometry;
     pub fn GEOSGeom_destroy(g: *mut GEOSGeometry);
     pub fn GEOSGeom_clone(g: *const GEOSGeometry) -> *mut GEOSGeometry;
 
@@ -60,7 +60,7 @@ extern "C" {
     pub fn GEOSCoordSeq_setOrdinate(
         s: *mut GEOSCoordSequence,
         idx: c_uint,
-        ordinate: size_t,
+        dim: c_uint,
         val: c_double,
     ) -> c_int;
     pub fn GEOSCoordSeq_getX(
@@ -81,18 +81,19 @@ extern "C" {
     pub fn GEOSCoordSeq_getOrdinate(
         s: *const GEOSCoordSequence,
         idx: c_uint,
-        ordinate: size_t,
-    ) -> c_double;
+        dim: c_uint,
+        val: *mut c_double,
+    ) -> c_int;
     pub fn GEOSCoordSeq_getSize(s: *const GEOSCoordSequence, val: *mut c_uint) -> c_int;
     pub fn GEOSCoordSeq_getDimensions(s: *const GEOSCoordSequence, val: *mut c_uint) -> c_int;
 
     // Geometry must be a LineString, LinearRing or Point:
-    pub fn GEOSGeom_getCoordSeq(g: *const GEOSGeometry) -> *mut GEOSCoordSequence;
+    pub fn GEOSGeom_getCoordSeq(g: *const GEOSGeometry) -> *const GEOSCoordSequence;
 
     // Geometry constructor:
-    pub fn GEOSGeom_createPoint(s: *const GEOSCoordSequence) -> *mut GEOSGeometry;
-    pub fn GEOSGeom_createLineString(s: *const GEOSCoordSequence) -> *mut GEOSGeometry;
-    pub fn GEOSGeom_createLinearRing(s: *const GEOSCoordSequence) -> *mut GEOSGeometry;
+    pub fn GEOSGeom_createPoint(s: *mut GEOSCoordSequence) -> *mut GEOSGeometry;
+    pub fn GEOSGeom_createLineString(s: *mut GEOSCoordSequence) -> *mut GEOSGeometry;
+    pub fn GEOSGeom_createLinearRing(s: *mut GEOSCoordSequence) -> *mut GEOSGeometry;
     pub fn GEOSGeom_createPolygon(
         shell: *mut GEOSGeometry,
         holes: *mut *mut GEOSGeometry,
@@ -123,8 +124,8 @@ extern "C" {
         g: *const GEOSGeometry,
         size: *mut size_t,
     ) -> *mut c_uchar;
-    pub fn GEOSGeomFromWKB_buf(wkb: *const u8, size: size_t) -> *mut GEOSGeometry;
-    pub fn GEOSGeomToWKB_buf(g: *const GEOSGeometry, size: *mut size_t) -> *mut u8;
+    pub fn GEOSGeomFromWKB_buf(wkb: *const c_uchar, size: size_t) -> *mut GEOSGeometry;
+    pub fn GEOSGeomToWKB_buf(g: *const GEOSGeometry, size: *mut size_t) -> *mut c_uchar;
     pub fn GEOSGeomTypeId(g: *const GEOSGeometry) -> c_int;
     pub fn GEOSArea(g: *const GEOSGeometry, area: *mut c_double) -> c_int;
     pub fn GEOSLength(g: *const GEOSGeometry, distance: *mut c_double) -> c_int;
@@ -205,7 +206,7 @@ extern "C" {
     pub fn GEOSBufferParams_setSingleSided(p: *mut GEOSBufferParams, singleSided: c_int) -> c_int;
     pub fn GEOSBufferWithParams(
         g: *const GEOSGeometry,
-        p: *mut GEOSBufferParams,
+        p: *const GEOSBufferParams,
         width: c_double,
     ) -> *mut GEOSGeometry;
     pub fn GEOSBufferWithStyle(
@@ -264,7 +265,7 @@ extern "C" {
     pub fn GEOSGetNumGeometries(g: *const GEOSGeometry) -> c_int;
     pub fn GEOSGeomType(g: *const GEOSGeometry) -> *mut c_char;
     pub fn GEOSGetSRID(g: *const GEOSGeometry) -> c_int;
-    pub fn GEOSSetSRID(g: *const GEOSGeometry, srid: c_int) -> c_int;
+    pub fn GEOSSetSRID(g: *mut GEOSGeometry, srid: c_int);
     #[cfg(feature = "v3_7_0")]
     pub fn GEOSSegmentIntersection(
         ax0: c_double,
@@ -285,41 +286,43 @@ extern "C" {
     ) -> *mut GEOSGeometry;
 
     // Functions acting on GEOSPreparedGeometry:
-    pub fn GEOSPreparedContains(pg1: *const GEOSPreparedGeometry, g2: *const GEOSGeometry)
-        -> c_int;
+    pub fn GEOSPreparedContains(
+        pg1: *const GEOSPreparedGeometry,
+        g2: *const GEOSGeometry,
+    ) -> c_char;
     pub fn GEOSPreparedContainsProperly(
         pg1: *const GEOSPreparedGeometry,
         g2: *const GEOSGeometry,
-    ) -> c_int;
+    ) -> c_char;
     pub fn GEOSPreparedCoveredBy(
         pg1: *const GEOSPreparedGeometry,
         g2: *const GEOSGeometry,
-    ) -> c_int;
+    ) -> c_char;
     pub fn GEOSPreparedCovers(
         pg1: *const GEOSPreparedGeometry,
         g2: *const GEOSGeometry,
-    ) -> c_int;
+    ) -> c_char;
     pub fn GEOSPreparedCrosses(
         pg1: *const GEOSPreparedGeometry,
         g2: *const GEOSGeometry,
-    ) -> c_int;
+    ) -> c_char;
     pub fn GEOSPreparedDisjoint(
         pg1: *const GEOSPreparedGeometry,
         g2: *const GEOSGeometry,
-    ) -> c_int;
+    ) -> c_char;
     pub fn GEOSPreparedIntersects(
         pg1: *const GEOSPreparedGeometry,
         g2: *const GEOSGeometry,
-    ) -> c_int;
+    ) -> c_char;
     pub fn GEOSPreparedOverlaps(
         pg1: *const GEOSPreparedGeometry,
         g2: *const GEOSGeometry,
-    ) -> c_int;
-    pub fn GEOSPreparedTouches(pg1: *const GEOSPreparedGeometry, g2: *const GEOSGeometry) -> c_int;
-    pub fn GEOSPreparedWithin(pg1: *const GEOSPreparedGeometry, g2: *const GEOSGeometry) -> c_int;
-    pub fn GEOSPreparedGeom_destroy(g: *mut GEOSPreparedGeometry);
-    pub fn GEOSGetInteriorRingN(g: *const GEOSGeometry, n: c_int) -> *mut GEOSGeometry;
-    pub fn GEOSGetExteriorRing(g: *const GEOSGeometry) -> *mut GEOSGeometry;
+    ) -> c_char;
+    pub fn GEOSPreparedTouches(pg1: *const GEOSPreparedGeometry, g2: *const GEOSGeometry) -> c_char;
+    pub fn GEOSPreparedWithin(pg1: *const GEOSPreparedGeometry, g2: *const GEOSGeometry) -> c_char;
+    pub fn GEOSPreparedGeom_destroy(g: *const GEOSPreparedGeometry);
+    pub fn GEOSGetInteriorRingN(g: *const GEOSGeometry, n: c_int) -> *const GEOSGeometry;
+    pub fn GEOSGetExteriorRing(g: *const GEOSGeometry) -> *const GEOSGeometry;
     pub fn GEOSGetNumInteriorRings(g: *const GEOSGeometry) -> c_int;
     pub fn GEOSGeomGetNumPoints(g: *const GEOSGeometry) -> c_int;
     pub fn GEOSGetNumCoordinates(g: *const GEOSGeometry) -> c_int;
@@ -362,13 +365,13 @@ extern "C" {
     pub fn GEOSGeom_createEmptyLineString() -> *mut GEOSGeometry;
     pub fn GEOSGeom_createEmptyPoint() -> *mut GEOSGeometry;
     pub fn GEOSGeom_getUserData(g: *const GEOSGeometry) -> *mut c_void;
-    pub fn GEOSGeom_setUserData(g: *const GEOSGeometry, userData: *mut c_void);
+    pub fn GEOSGeom_setUserData(g: *mut GEOSGeometry, userData: *mut c_void);
     pub fn GEOSSTRtree_create(nodeCapacity: size_t) -> *mut GEOSSTRtree;
     pub fn GEOSSTRtree_insert(
         tree: *mut GEOSSTRtree,
         g: *const GEOSGeometry,
         item: *mut c_void,
-    ) -> *mut GEOSSTRtree;
+    );
     pub fn GEOSSTRtree_query(
         tree: *mut GEOSSTRtree,
         g: *const GEOSGeometry,
@@ -378,14 +381,14 @@ extern "C" {
     pub fn GEOSSTRtree_nearest(
         tree: *mut GEOSSTRtree,
         g: *const GEOSGeometry,
-    ) -> *mut GEOSGeometry;
+    ) -> *const GEOSGeometry;
     pub fn GEOSSTRtree_nearest_generic(
         tree: *mut GEOSSTRtree,
-        item: *mut c_void,
+        item: *const c_void,
         itemEnvelope: *const GEOSGeometry,
         distancefn: GEOSDistanceCallback,
         userdata: *mut c_void,
-    ) -> *mut c_void;
+    ) -> *const c_void;
     pub fn GEOSSTRtree_iterate(
         tree: *mut GEOSSTRtree,
         callback: GEOSQueryCallback,
@@ -401,7 +404,7 @@ extern "C" {
     pub fn GEOS_setWKBOutputDims(newDims: c_int) -> c_int;
     pub fn GEOS_getWKBByteOrder() -> c_int;
     pub fn GEOS_setWKBByteOrder(byteOrder: c_int) -> c_int;
-    pub fn GEOSGetGeometryN(g: *const GEOSGeometry, n: c_int) -> *mut GEOSGeometry;
+    pub fn GEOSGetGeometryN(g: *const GEOSGeometry, n: c_int) -> *const GEOSGeometry;
     pub fn GEOSInterpolate(g: *const GEOSGeometry, d: c_double) -> *mut GEOSGeometry;
     pub fn GEOSInterpolateNormalized(g: *const GEOSGeometry, d: c_double) -> *mut GEOSGeometry;
     pub fn GEOSProjectNormalized(g: *const GEOSGeometry, p: *const GEOSGeometry) -> c_double;
@@ -437,7 +440,7 @@ extern "C" {
         g1: *const GEOSGeometry,
         g2: *const GEOSGeometry,
         bnr: c_int,
-    ) -> c_char;
+    ) -> *mut c_char;
     pub fn GEOSSharedPaths(g1: *const GEOSGeometry, g2: *const GEOSGeometry) -> *mut GEOSGeometry;
     pub fn GEOSWKBReader_create() -> *mut GEOSWKBReader;
     pub fn GEOSWKBReader_destroy(reader: *mut GEOSWKBReader);
@@ -445,12 +448,12 @@ extern "C" {
         reader: *mut GEOSWKBReader,
         wkb: *const c_uchar,
         size: size_t,
-    );
+    ) -> *mut GEOSGeometry;
     pub fn GEOSWKBReader_readHEX(
         reader: *mut GEOSWKBReader,
         hex: *const c_uchar,
         size: size_t,
-    );
+    ) -> *mut GEOSGeometry;
     pub fn GEOSWKBWriter_create() -> *mut GEOSWKBWriter;
     pub fn GEOSWKBWriter_destroy(reader: *mut GEOSWKBWriter);
     pub fn GEOSWKBWriter_write(
@@ -463,17 +466,17 @@ extern "C" {
         g: *const GEOSGeometry,
         size: *mut size_t,
     ) -> *mut c_uchar;
-    pub fn GEOSWKBWriter_getOutputDimension(writer: *mut GEOSWKBWriter) -> c_int;
+    pub fn GEOSWKBWriter_getOutputDimension(writer: *const GEOSWKBWriter) -> c_int;
     pub fn GEOSWKBWriter_setOutputDimension(
         writer: *mut GEOSWKBWriter,
         newDimension: c_int,
     );
-    pub fn GEOSWKBWriter_getByteOrder(writer: *mut GEOSWKBWriter) -> c_int;
+    pub fn GEOSWKBWriter_getByteOrder(writer: *const GEOSWKBWriter) -> c_int;
     pub fn GEOSWKBWriter_setByteOrder(
         writer: *mut GEOSWKBWriter,
         byteOrder: c_int,
     );
-    pub fn GEOSWKBWriter_getIncludeSRID(writer: *mut GEOSWKBWriter) -> c_char;
+    pub fn GEOSWKBWriter_getIncludeSRID(writer: *const GEOSWKBWriter) -> c_char;
     pub fn GEOSWKBWriter_setIncludeSRID(
         writer: *mut GEOSWKBWriter,
         writeSRID: c_char,
@@ -486,15 +489,17 @@ extern "C" {
     ) -> c_char;
     pub fn GEOS_interruptCancel();
     pub fn GEOS_interruptRequest();
-    pub fn GEOS_interruptRegisterCallback(cb: GEOSInterruptCallback) -> GEOSInterruptCallback;
+    pub fn GEOS_interruptRegisterCallback(
+        cb: *mut GEOSInterruptCallback,
+    ) -> *mut GEOSInterruptCallback;
 
     /* Thread safe calls */
     pub fn GEOS_init_r() -> GEOSContextHandle_t;
     pub fn GEOS_finish_r(handle: GEOSContextHandle_t);
     pub fn GEOSContext_setNoticeHandler_r(
         handle: GEOSContextHandle_t,
-        nf: GEOSMessageHandler_r,
-    ) -> GEOSMessageHandler_r;
+        nf: GEOSMessageHandler,
+    ) -> GEOSMessageHandler;
     pub fn GEOSContext_setNoticeMessageHandler_r(
         handle: GEOSContextHandle_t,
         nf: GEOSMessageHandler_r,
@@ -502,8 +507,8 @@ extern "C" {
     ) -> GEOSMessageHandler_r;
     pub fn GEOSContext_setErrorHandler_r(
         handle: GEOSContextHandle_t,
-        nf: GEOSMessageHandler_r,
-    ) -> GEOSMessageHandler_r;
+        nf: GEOSMessageHandler,
+    ) -> GEOSMessageHandler;
     pub fn GEOSContext_setErrorMessageHandler_r(
         handle: GEOSContextHandle_t,
         nf: GEOSMessageHandler_r,
@@ -627,15 +632,15 @@ extern "C" {
     ) -> *mut GEOSGeometry;
     pub fn GEOSGeom_createPoint_r(
         handle: GEOSContextHandle_t,
-        s: *const GEOSCoordSequence,
+        s: *mut GEOSCoordSequence,
     ) -> *mut GEOSGeometry;
     pub fn GEOSGeom_createLineString_r(
         handle: GEOSContextHandle_t,
-        s: *const GEOSCoordSequence,
+        s: *mut GEOSCoordSequence,
     ) -> *mut GEOSGeometry;
     pub fn GEOSGeom_createLinearRing_r(
         handle: GEOSContextHandle_t,
-        s: *const GEOSCoordSequence,
+        s: *mut GEOSCoordSequence,
     ) -> *mut GEOSGeometry;
     pub fn GEOSUnaryUnion_r(
         handle: GEOSContextHandle_t,
@@ -839,7 +844,7 @@ extern "C" {
     pub fn GEOSGeom_getCoordSeq_r(
         handle: GEOSContextHandle_t,
         g: *const GEOSGeometry,
-    ) -> *mut GEOSCoordSequence;
+    ) -> *const GEOSCoordSequence;
     pub fn GEOSCoordSeq_getDimensions_r(
         handle: GEOSContextHandle_t,
         s: *const GEOSCoordSequence,
@@ -848,74 +853,75 @@ extern "C" {
     pub fn GEOSPrepare_r(
         handle: GEOSContextHandle_t,
         g: *const GEOSGeometry,
-    ) -> *mut GEOSPreparedGeometry;
+    ) -> *const GEOSPreparedGeometry;
     pub fn GEOSPreparedContains_r(
         handle: GEOSContextHandle_t,
         pg1: *const GEOSPreparedGeometry,
         g2: *const GEOSGeometry,
-    ) -> c_int;
+    ) -> c_char;
     pub fn GEOSPreparedContainsProperly_r(
         handle: GEOSContextHandle_t,
         pg1: *const GEOSPreparedGeometry,
         g2: *const GEOSGeometry,
-    ) -> c_int;
+    ) -> c_char;
     pub fn GEOSPreparedCoveredBy_r(
         handle: GEOSContextHandle_t,
         pg1: *const GEOSPreparedGeometry,
         g2: *const GEOSGeometry,
-    ) -> c_int;
+    ) -> c_char;
     pub fn GEOSPreparedCovers_r(
         handle: GEOSContextHandle_t,
         pg1: *const GEOSPreparedGeometry,
         g2: *const GEOSGeometry,
-    ) -> c_int;
+    ) -> c_char;
     pub fn GEOSPreparedCrosses_r(
         handle: GEOSContextHandle_t,
         pg1: *const GEOSPreparedGeometry,
         g2: *const GEOSGeometry,
-    ) -> c_int;
+    ) -> c_char;
     pub fn GEOSPreparedDisjoint_r(
         handle: GEOSContextHandle_t,
         pg1: *const GEOSPreparedGeometry,
         g2: *const GEOSGeometry,
-    ) -> c_int;
+    ) -> c_char;
     pub fn GEOSPreparedIntersects_r(
         handle: GEOSContextHandle_t,
         pg1: *const GEOSPreparedGeometry,
         g2: *const GEOSGeometry,
-    ) -> c_int;
+    ) -> c_char;
     pub fn GEOSPreparedOverlaps_r(
         handle: GEOSContextHandle_t,
         pg1: *const GEOSPreparedGeometry,
         g2: *const GEOSGeometry,
-    ) -> c_int;
+    ) -> c_char;
     pub fn GEOSPreparedTouches_r(
         handle: GEOSContextHandle_t,
         pg1: *const GEOSPreparedGeometry,
         g2: *const GEOSGeometry,
-    ) -> c_int;
+    ) -> c_char;
     pub fn GEOSPreparedWithin_r(
         handle: GEOSContextHandle_t,
         pg1: *const GEOSPreparedGeometry,
         g2: *const GEOSGeometry,
-    ) -> c_int;
+    ) -> c_char;
     pub fn GEOSPreparedGeom_destroy_r(
         handle: GEOSContextHandle_t,
-        g: *mut GEOSPreparedGeometry,
+        g: *const GEOSPreparedGeometry,
     );
     pub fn GEOSCoordSeq_setOrdinate_r(
         handle: GEOSContextHandle_t,
         s: *mut GEOSCoordSequence,
         idx: c_uint,
-        ordinate: size_t,
+        dim: c_uint,
         val: c_double,
     ) -> c_int;
     pub fn GEOSCoordSeq_getOrdinate_r(
         handle: GEOSContextHandle_t,
         s: *const GEOSCoordSequence,
         idx: c_uint,
-        ordinate: size_t,
-    ) -> c_double;
+        dim: c_uint,
+        val: *mut c_double,
+    ) -> c_int;
     pub fn GEOSGeomGetPointN_r(
         handle: GEOSContextHandle_t,
         g: *const GEOSGeometry,
@@ -953,11 +959,11 @@ extern "C" {
         handle: GEOSContextHandle_t,
         g: *const GEOSGeometry,
         n: c_int,
-    ) -> *mut GEOSGeometry;
+    ) -> *const GEOSGeometry;
     pub fn GEOSGetExteriorRing_r(
         handle: GEOSContextHandle_t,
         g: *const GEOSGeometry,
-    ) -> *mut GEOSGeometry;
+    ) -> *const GEOSGeometry;
     pub fn GEOSGetNumInteriorRings_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_int;
     pub fn GEOSGeomGetNumPoints_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_int;
     pub fn GEOSGetNumCoordinates_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_int;
@@ -973,7 +979,7 @@ extern "C" {
     pub fn GEOSGetNumGeometries_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_int;
     pub fn GEOSGeomType_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> *mut c_char;
     pub fn GEOSGetSRID_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry) -> c_int;
-    pub fn GEOSSetSRID_r(handle: GEOSContextHandle_t, g: *const GEOSGeometry, srid: c_int) -> c_int;
+    pub fn GEOSSetSRID_r(handle: GEOSContextHandle_t, g: *mut GEOSGeometry, srid: c_int);
     #[cfg(feature = "v3_7_0")]
     pub fn GEOSCoordSeq_isCCW_r(
         handle: GEOSContextHandle_t,
@@ -1067,7 +1073,7 @@ extern "C" {
     ) -> *mut c_void;
     pub fn GEOSGeom_setUserData_r(
         handle: GEOSContextHandle_t,
-        g: *const GEOSGeometry,
+        g: *mut GEOSGeometry,
         userData: *mut c_void,
     );
     pub fn GEOSSTRtree_create_r(
@@ -1079,7 +1085,7 @@ extern "C" {
         tree: *mut GEOSSTRtree,
         g: *const GEOSGeometry,
         item: *mut c_void,
-    ) -> *mut GEOSSTRtree;
+    );
     pub fn GEOSSTRtree_query_r(
         handle: GEOSContextHandle_t,
         tree: *mut GEOSSTRtree,
@@ -1091,15 +1097,15 @@ extern "C" {
         handle: GEOSContextHandle_t,
         tree: *mut GEOSSTRtree,
         g: *const GEOSGeometry,
-    ) -> *mut GEOSGeometry;
+    ) -> *const GEOSGeometry;
     pub fn GEOSSTRtree_nearest_generic_r(
         handle: GEOSContextHandle_t,
         tree: *mut GEOSSTRtree,
-        item: *mut c_void,
+        item: *const c_void,
         itemEnvelope: *const GEOSGeometry,
         distancefn: GEOSDistanceCallback,
         userdata: *mut c_void,
-    ) -> *mut c_void;
+    ) -> *const c_void;
     pub fn GEOSSTRtree_iterate_r(
         handle: GEOSContextHandle_t,
         tree: *mut GEOSSTRtree,
@@ -1117,7 +1123,7 @@ extern "C" {
         handle: GEOSContextHandle_t,
         g: *const GEOSGeometry,
         n: c_int,
-    ) -> *mut GEOSGeometry;
+    ) -> *const GEOSGeometry;
     pub fn GEOSInterpolate_r(
         handle: GEOSContextHandle_t,
         g: *const GEOSGeometry,
@@ -1207,7 +1213,7 @@ extern "C" {
     pub fn GEOSBufferWithParams_r(
         handle: GEOSContextHandle_t,
         g: *const GEOSGeometry,
-        p: *mut GEOSBufferParams,
+        p: *const GEOSBufferParams,
         width: c_double,
     ) -> *mut GEOSGeometry;
     pub fn GEOSBufferWithStyle_r(
@@ -1245,7 +1251,7 @@ extern "C" {
         g1: *const GEOSGeometry,
         g2: *const GEOSGeometry,
         bnr: c_int,
-    ) -> c_char;
+    ) -> *mut c_char;
     pub fn GEOSSharedPaths_r(
         handle: GEOSContextHandle_t,
         g1: *const GEOSGeometry,
@@ -1283,13 +1289,13 @@ extern "C" {
         reader: *mut GEOSWKBReader,
         wkb: *const c_uchar,
         size: size_t,
-    );
+    ) -> *mut GEOSGeometry;
     pub fn GEOSWKBReader_readHEX_r(
         handle: GEOSContextHandle_t,
         reader: *mut GEOSWKBReader,
         hex: *const c_uchar,
         size: size_t,
-    );
+    ) -> *mut GEOSGeometry;
     pub fn GEOSWKBWriter_create_r(
         handle: GEOSContextHandle_t,
     ) -> *mut GEOSWKBWriter;
@@ -1311,7 +1317,7 @@ extern "C" {
     ) -> *mut c_uchar;
     pub fn GEOSWKBWriter_getOutputDimension_r(
         handle: GEOSContextHandle_t,
-        writer: *mut GEOSWKBWriter,
+        writer: *const GEOSWKBWriter,
     ) -> c_int;
     pub fn GEOSWKBWriter_setOutputDimension_r(
         handle: GEOSContextHandle_t,
@@ -1320,7 +1326,7 @@ extern "C" {
     );
     pub fn GEOSWKBWriter_getByteOrder_r(
         handle: GEOSContextHandle_t,
-        writer: *mut GEOSWKBWriter,
+        writer: *const GEOSWKBWriter,
     ) -> c_int;
     pub fn GEOSWKBWriter_setByteOrder_r(
         handle: GEOSContextHandle_t,
@@ -1329,7 +1335,7 @@ extern "C" {
     );
     pub fn GEOSWKBWriter_getIncludeSRID_r(
         handle: GEOSContextHandle_t,
-        writer: *mut GEOSWKBWriter,
+        writer: *const GEOSWKBWriter,
     ) -> c_char;
     pub fn GEOSWKBWriter_setIncludeSRID_r(
         handle: GEOSContextHandle_t,
