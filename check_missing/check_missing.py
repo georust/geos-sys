@@ -178,7 +178,7 @@ def get_rust_functions(filename, c_func):
         elif len(func_name) > 0:
             functions.add(func_name)
         pos += 1
-    return (functions, errors == 0)
+    return (functions, errors != 0)
 
 
 c_func = get_c_functions('check_missing/geos_c.h')
