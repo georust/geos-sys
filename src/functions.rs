@@ -935,6 +935,7 @@ extern "C" {
         handle: GEOSContextHandle_t,
         g: *const GEOSGeometry,
     ) -> *mut GEOSGeometry;
+    #[cfg(feature = "v3_8_0")]
     pub fn GEOSBuildArea_r(
         handle: GEOSContextHandle_t,
         g: *const GEOSGeometry,
