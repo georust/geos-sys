@@ -2,8 +2,9 @@
 name = "geos-src"
 version = "0.1.0"
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+links = "geossrc"
+build = "build.rs"
+authors = ["Gaute Hope <eg@gaute.vetsj.com>"]
 
 [build-dependencies]
 cmake = "0.1.45"

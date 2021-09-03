@@ -7,6 +7,9 @@
 
 extern crate libc;
 
+#[cfg(feature = "static")]
+extern crate link_cplusplus;
+
 pub use functions::*;
 pub use types::*;
 
