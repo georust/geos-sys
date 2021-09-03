@@ -1,0 +1,3 @@
+[submodule "geos-src/source"]
+	path = geos-src/source
+	url = https://github.com/libgeos/geos
