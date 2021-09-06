@@ -12,6 +12,7 @@ fn main() {
     let libgeos = libgeos_config.build();
 
     println!("cargo:lib=geos_c");
+    println!("cargo:lib=geos");
 
     let search_path = format!("{}/lib", libgeos.display());
     assert!(std::path::Path::new(&search_path).exists());
