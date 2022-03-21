@@ -1,4 +1,6 @@
+⚠️⚠️⚠️⚠️⚠️⚠️
 ⚠️ This crate is now hosted in the [geos](https://github.com/georust/geos/) repository.
+⚠️⚠️⚠️⚠️⚠️⚠️
 
 # geos-sys
 
