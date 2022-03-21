@@ -7,6 +7,10 @@ prefer to use the [georust/geos](https://github.com/georust/geos) crate.
 
 You can also find it on [crates.io](https://crates.io/crates/geos).
 
+## Static build
+
+If you want to link statically to libgeos, then use the `static` feature. It will build `libgeos` so you need to have `cmake` and a C++ compiler.
+
 ## Add more functions
 
 A little script is available to check what functions aren't available yet. You can run it as follows:
