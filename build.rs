@@ -3,10 +3,19 @@ extern crate pkg_config;
 fn main() {
     let lib = "geos_c";
 
-    match pkg_config::Config::new().probe(lib) {
-        Ok(_) => {}
-        Err(_) => {
-            println!("cargo:rustc-link-lib=dylib={}", lib);
+    if std::env::var("CARGO_FEATURE_STATIC").is_ok() {
+        let geos_path = std::env::var("DEP_GEOSSRC_SEARCH").unwrap();
+
+        println!("cargo:rustc-link-lib=static=geos_c");
+        println!("cargo:rustc-link-lib=static=geos");
+        println!("cargo:rustc-link-search=native={}", geos_path);
+        println!("cargo:includedir={}/include", geos_path)
+    } else {
+        match pkg_config::Config::new().probe(lib) {
+            Ok(_) => {}
+            Err(_) => {
+                println!("cargo:rustc-link-lib=dylib={}", lib);
+            }
         }
     }
 
